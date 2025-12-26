@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết quả đạn - QR Thông minh</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; text-transform: uppercase; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 14px; }
+        input[readonly] { background: #eee; color: #7f8c8d; }
+        .btn-save { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #qr-area { text-align: center; margin-top: 25px; padding: 20px; background: #fff; border: 2px dashed #ddd; }
+        #qrcode img { margin: auto; }
+        .btn-download { background: #3498db; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="margin-bottom: 15px;"><a href="index.html" style="text-decoration: none; color: #3498db;">← Quay lại danh sách</a></div>
+    <h2>Thông tin Quả đạn</h2>
+    
+    <div class="form-group">
+        <label>Số hiệu (ID cố định):</label>
+        <input type="text" id="so-hieu" readonly>
+    </div>
+    <div class="form-group">
+        <label>Ngày sản xuất:</label>
+        <input type="text" id="ngay-sx">
+    </div>
+    <div class="form-group">
+        <label>Nước sản xuất:</label>
+        <input type="text" id="nuoc-sx">
+    </div>
+    <div class="form-group">
+        <label>Tình trạng kỹ thuật:</label>
+        <input type="text" id="tinh-trang">
+    </div>
+    <div class="form-group">
+        <label>Phách:</label>
+        <input type="text" id="phach">
+    </div>
+    <div class="form-group">
+        <label>Số lần kiểm tra:</label>
+        <input type="text" id="lan-kt">
+    </div>
+    <div class="form-group">
+        <label>Thời hạn sử dụng:</label>
+        <input type="text" id="han-dung">
+    </div>
+
+    <button class="btn-save" onclick="save()">LƯU VÀ GIỮ NGUYÊN MÃ QR</button>
+
+    <div id="qr-area">
+        <div id="qrcode"></div>
+        <p style="font-size: 12px; color: #666;">Quét mã này để xem thông tin chi tiết trên điện thoại</p>
+        <button class="btn-download" onclick="downloadQRCode()">Tải ảnh mã QR</button>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    document.getElementById('so-hieu').value = id;
+
+    // Tải dữ liệu cũ
+    const saved = JSON.parse(localStorage.getItem('data_' + id)) || {};
+    document.getElementById('ngay-sx').value = saved.ngay || '';
+    document.getElementById('nuoc-sx').value = saved.nuoc || '';
+    document.getElementById('tinh-trang').value = saved.tt || '';
+    document.getElementById('phach').value = saved.phach || '';
+    document.getElementById('lan-kt').value = saved.kt || '';
+    document.getElementById('han-dung').value = saved.han || '';
+
+    function save() {
+        const data = {
+            ngay: document.getElementById('ngay-sx').value,
+            nuoc: document.getElementById('nuoc-sx').value,
+            tt: document.getElementById('tinh-trang').value,
+            phach: document.getElementById('phach').value,
+            kt: document.getElementById('lan-kt').value,
+            han: document.getElementById('han-dung').value
+        };
+        localStorage.setItem('data_' + id, JSON.stringify(data));
+        alert("Đã cập nhật dữ liệu. Mã QR bên dưới vẫn có giá trị sử dụng!");
+    }
+
+    function makeQR() {
+    const qrcodeContainer = document.getElementById("qrcode");
+    qrcodeContainer.innerHTML = "";
+
+    // Lấy địa chỉ trang web thực tế (ví dụ: https://ten-cua-ban.github.io/...)
+    const currentUrl = window.location.href; 
+
+    new QRCode(qrcodeContainer, {
+        text: currentUrl, // Địa chỉ này sẽ không đổi dù bạn sửa dữ liệu bên trong
+        width: 180,
+        height: 180,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+}
+
+    function downloadQRCode() {
+        const qrImage = document.querySelector('#qrcode img');
+        if (qrImage) {
+            const link = document.createElement('a');
+            link.href = qrImage.src;
+            link.download = 'QR_Codinh_' + id + '.png';
+            link.click();
+        }
+    }
+
+    window.onload = makeQR;
+</script>
+
+</body>
+</html>

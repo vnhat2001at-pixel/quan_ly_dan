@@ -1,0 +1,229 @@
+/* Reset định dạng cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header xanh bầu trời theo ảnh mẫu */
+.main-header {
+    background-color: #87CEEB; /* SkyBlue */
+    padding: 30px 0;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.main-header h1 {
+    font-size: 32px;
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Container chứa nội dung */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 50px 20px;
+}
+
+/* Cấu trúc từng tuyến đạn */
+.missile-section {
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* Nhãn phía trên */
+.label-box {
+    display: inline-block;
+    background-color: #ffffff;
+    border: 1px solid #bdc3c7;
+    padding: 8px 25px;
+    font-weight: bold;
+    font-size: 15px;
+    position: absolute;
+    top: -18px;
+    left: 40px;
+    z-index: 10;
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Khối nội dung màu xám nhạt */
+.content-box {
+    background-color: #e0e0e0; /* Màu xám theo ảnh mẫu */
+    border: 1px solid #bdc3c7;
+    min-height: 120px;
+    border-radius: 4px;
+    padding: 30px 20px 20px 20px;
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng khi di chuột vào (Hover) */
+.content-box:hover {
+    background-color: #d5d5d5;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-color: #3498db;
+}
+
+.placeholder-text {
+    color: #7f8c8d;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* Tối ưu cho thiết bị di động */
+@media (max-width: 600px) {
+    .main-header h1 { font-size: 20px; }
+    .label-box { left: 20px; font-size: 13px; }
+}
+
+.missile-list {
+    list-style: none;
+    margin-bottom: 15px;
+}
+
+.missile-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.missile-link {
+    text-decoration: none;
+    color: #2980b9;
+    font-weight: bold;
+}
+
+.missile-link:hover { text-decoration: underline; }
+
+.btn-add {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-delete {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-add:hover { background-color: #2ecc71; }
+.btn-delete:hover { background-color: #c0392b; }
+.label-box {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Khoảng cách giữa chữ và nút */
+    background-color: #ffffff;
+    border: 1px solid #bdc3c7;
+    padding: 5px 15px;
+    font-weight: bold;
+    position: absolute;
+    top: -18px;
+    left: 40px;
+    z-index: 10;
+    border-radius: 4px;
+}
+
+/* Nút thêm nhỏ cạnh tiêu đề */
+.btn-inline-add {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-inline-add:hover { background-color: #2ecc71; }
+
+/* Thẻ hiển thị tên quả đạn */
+.missile-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 5px 12px;
+    margin: 5px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+.btn-remove-name {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    color: #e74c3c;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-remove-name:hover { color: #c0392b; }
+
+.content-box {
+    background-color: #e0e0e0;
+    border: 1px solid #bdc3c7;
+    min-height: 80px;
+    border-radius: 4px;
+    padding: 25px 15px 15px 15px;
+}
+/* Trang trí cho đường dẫn tên đạn */
+.missile-link {
+    text-decoration: none; /* Bỏ gạch chân */
+    color: #2980b9; /* Màu xanh chuyên nghiệp */
+    font-weight: bold;
+    font-size: 14px;
+    padding-right: 5px;
+}
+
+.missile-link:hover {
+    color: #d35400; /* Đổi sang màu cam khi di chuột vào */
+    text-decoration: underline;
+}
+
+/* Đảm bảo thẻ tag không bị vỡ khi có link */
+.missile-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 5px 15px;
+    margin: 5px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
