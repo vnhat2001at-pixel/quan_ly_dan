@@ -90,14 +90,22 @@
     }
 
     function makeQR() {
-    const qrcodeContainer = document.getElementById("qrcode");
-    qrcodeContainer.innerHTML = "";
+    // 1. Kiểm tra thẻ chứa QR (phải trùng ID với thẻ <div> trong HTML)
+    const qrcodeDiv = document.getElementById("qrcode"); 
+    
+    if (!qrcodeDiv) {
+        console.error("Không tìm thấy thẻ div có id='qrcode'");
+        return;
+    }
 
-    // Lấy địa chỉ trang web thực tế (ví dụ: https://ten-cua-ban.github.io/...)
-    const currentUrl = window.location.href; 
+    qrcodeDiv.innerHTML = ""; // Xóa mã cũ trước khi tạo mới
 
-    new QRCode(qrcodeContainer, {
-        text: currentUrl, // Địa chỉ này sẽ không đổi dù bạn sửa dữ liệu bên trong
+    // 2. LẤY LINK TỰ ĐỘNG: 
+    // Khi bạn chạy trên GitHub, nó sẽ tự lấy link https://ten-ban.github.io/...
+    const linkCuaToi = window.location.href; 
+
+    new QRCode(qrcodeDiv, {
+        text: linkCuaToi,
         width: 180,
         height: 180,
         colorDark : "#000000",
@@ -115,8 +123,46 @@
             link.click();
         }
     }
-
     window.onload = makeQR;
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzXNrPP8PIN-w0Td8i5Bke40tczvwIlbhqBT3amDVzQutKR86q1sOD1BIP0tRFkFqm/exec";
+
+// 1. Hàm Lưu dữ liệu lên Google Sheets
+async function save() {
+    const data = {
+        id: id,
+        ngay: document.getElementById('ngay-sx').value,
+        nuoc: document.getElementById('nuoc-sx').value,
+        tt: document.getElementById('tinh-trang').value,
+        phach: document.getElementById('phach').value,
+        kt: document.getElementById('lan-kt').value,
+        han: document.getElementById('han-dung').value
+    };
+
+    const response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+    
+    if (response.ok) alert("Đã lưu dữ liệu lên Google Drive thành công!");
+}
+
+// 2. Hàm Tải dữ liệu khi quét QR hoặc mở trang
+async function loadData() {
+    const response = await fetch(`${SCRIPT_URL}?id=${id}`);
+    const data = await response.json();
+    
+    if (data.ngay) {
+        document.getElementById('ngay-sx').value = data.ngay;
+        document.getElementById('nuoc-sx').value = data.nuoc;
+        document.getElementById('tinh-trang').value = data.tt;
+        document.getElementById('phach').value = data.phach;
+        document.getElementById('lan-kt').value = data.kt;
+        document.getElementById('han-dung').value = data.han;
+    }
+    makeQR(); // Tạo mã QR chứa link web cố định
+}
+
+window.onload = loadData;
 </script>
 
 </body>
