@@ -58,3 +58,22 @@ function renderAllMissiles() {
         }
     });
 }
+function doPost(e) {
+  try {
+    // Kiểm tra xem e và e.postData có tồn tại không
+    if (!e || !e.postData || !e.postData.contents) {
+      return ContentService.createTextOutput("Lỗi: Không có dữ liệu gửi tới").setMimeType(ContentService.MimeType.TEXT);
+    }
+
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheets()[0];
+    
+    // Ghi vào dòng cuối cùng của Sheets
+    sheet.appendRow([data.id, data.ngay, data.nuoc, data.tt, data.phach, data.kt, data.han]);
+    
+    return ContentService.createTextOutput("Lưu thành công").setMimeType(ContentService.MimeType.TEXT);
+  } catch (err) {
+    return ContentService.createTextOutput("Lỗi hệ thống: " + err.toString()).setMimeType(ContentService.MimeType.TEXT);
+  }
+}
