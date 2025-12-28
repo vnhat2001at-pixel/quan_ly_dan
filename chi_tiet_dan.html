@@ -13,7 +13,6 @@
         label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
         input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
         
-        /* Chế độ Read-only cho khách quét QR */
         input:read-only { background: #f9f9f9; border-color: transparent; color: #d32f2f; font-weight: bold; cursor: default; }
         
         .btn-save { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
@@ -92,7 +91,6 @@
     }
 
     async function saveData() {
-        // --- PHẦN CHỈNH SỬA KIỂM TRA BẮT BUỘC ---
         const ngay = document.getElementById('ngay-sx').value;
         const nuoc = document.getElementById('nuoc-sx').value;
         const tt = document.getElementById('tinh-trang').value;
@@ -100,18 +98,17 @@
         const kt = document.getElementById('lan-kt').value;
         const han = document.getElementById('han-dung').value;
 
-        // Kiểm tra tất cả bắt buộc nhập
+        // Kiểm tra bắt buộc nhập
         if (!ngay || !nuoc || !tt || !phach || !kt || !han) {
             alert("Vui lòng nhập đầy đủ tất cả các thông tin!");
             return;
         }
 
-        // Kiểm tra phách từ 1-5
+        // Kiểm tra phách 1-5
         if (phach < 1 || phach > 5) {
             alert("Số Phách phải nằm trong khoảng từ 1 đến 5!");
             return;
         }
-        // --- HẾT PHẦN KIỂM TRA ---
 
         const btn = document.getElementById('btn-save');
         btn.innerText = "Đang lưu..."; btn.disabled = true;
