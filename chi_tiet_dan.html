@@ -32,12 +32,12 @@
     <h2 id="title">THÔNG TIN QUẢ ĐẠN</h2>
     
     <div class="form-group"><label>Số hiệu:</label><input type="text" id="so-hieu" readonly></div>
-    <div class="form-group"><label>Ngày sản xuất:</label><input type="text" id="ngay-sx"></div>
+    <div class="form-group"><label>Ngày sản xuất:</label><input type="date" id="ngay-sx"></div>
     <div class="form-group"><label>Nước sản xuất:</label><input type="text" id="nuoc-sx"></div>
     <div class="form-group"><label>Tình trạng:</label><input type="text" id="tinh-trang"></div>
-    <div class="form-group"><label>Phách:</label><input type="text" id="phach"></div>
-    <div class="form-group"><label>Lần kiểm tra:</label><input type="text" id="lan-kt"></div>
-    <div class="form-group"><label>Hạn dùng:</label><input type="text" id="han-dung"></div>
+    <div class="form-group"><label>Phách (1-5):</label><input type="number" id="phach" min="1" max="5"></div>
+    <div class="form-group"><label>Lần kiểm tra:</label><input type="number" id="lan-kt"></div>
+    <div class="form-group"><label>Hạn dùng:</label><input type="number" id="han-dung"></div>
 
     <button id="btn-save" class="btn-save" onclick="saveData()">LƯU LÊN GOOGLE SHEETS</button>
 
@@ -48,18 +48,15 @@
 </div>
 
 <script>
-    // 1. THAY LINK WEB APP (/exec) CỦA BẠN VÀO ĐÂY
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm3WLw8bNu5bZ561hHLRKltcG25L4KAUrZYaT9go17gbAZWEX0RoWGf8E2aLHzyl-A/exec"; 
 
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     document.getElementById('so-hieu').value = id;
 
-    // Phân quyền: Nếu mở trên Điện thoại (quét QR) là Khách xem, trên Máy tính là Chủ sửa
     const isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
 
     async function loadData() {
-        // Giao diện cho Khách xem (Điện thoại)
         if (isMobile) {
             document.getElementById('role-badge').innerText = "CHẾ ĐỘ: XEM THÔNG TIN";
             document.getElementById('role-badge').className = "badge badge-view";
@@ -95,21 +92,41 @@
     }
 
     async function saveData() {
+        // --- PHẦN CHỈNH SỬA KIỂM TRA BẮT BUỘC ---
+        const ngay = document.getElementById('ngay-sx').value;
+        const nuoc = document.getElementById('nuoc-sx').value;
+        const tt = document.getElementById('tinh-trang').value;
+        const phach = document.getElementById('phach').value;
+        const kt = document.getElementById('lan-kt').value;
+        const han = document.getElementById('han-dung').value;
+
+        // Kiểm tra tất cả bắt buộc nhập
+        if (!ngay || !nuoc || !tt || !phach || !kt || !han) {
+            alert("Vui lòng nhập đầy đủ tất cả các thông tin!");
+            return;
+        }
+
+        // Kiểm tra phách từ 1-5
+        if (phach < 1 || phach > 5) {
+            alert("Số Phách phải nằm trong khoảng từ 1 đến 5!");
+            return;
+        }
+        // --- HẾT PHẦN KIỂM TRA ---
+
         const btn = document.getElementById('btn-save');
         btn.innerText = "Đang lưu..."; btn.disabled = true;
 
         const payload = {
             id: id,
-            ngay: document.getElementById('ngay-sx').value,
-            nuoc: document.getElementById('nuoc-sx').value,
-            tt: document.getElementById('tinh-trang').value,
-            phach: document.getElementById('phach').value,
-            kt: document.getElementById('lan-kt').value,
-            han: document.getElementById('han-dung').value
+            ngay: ngay,
+            nuoc: nuoc,
+            tt: tt,
+            phach: phach,
+            kt: kt,
+            han: han
         };
 
         try {
-            // Dùng mode no-cors để gửi thành công lên Google
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
             alert("Đã cập nhật dữ liệu vào Google Sheets thành công!");
             makeQR();
