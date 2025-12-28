@@ -12,9 +12,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
         input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        
         input:read-only { background: #f9f9f9; border-color: transparent; color: #d32f2f; font-weight: bold; cursor: default; }
-        
         .btn-save { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
         .btn-save:hover { background: #1b5e20; }
         #qr-section { text-align: center; margin-top: 25px; border-top: 1px dashed #ccc; padding-top: 20px; }
@@ -31,7 +29,7 @@
     <h2 id="title">THÔNG TIN QUẢ ĐẠN</h2>
     
     <div class="form-group"><label>Số hiệu:</label><input type="text" id="so-hieu" readonly></div>
-    <div class="form-group"><label>Ngày sản xuất:</label><input type="text" id="ngay-sx" placeholder="VD: 20/10/2023"></div>
+    <div class="form-group"><label>Ngày sản xuất:</label><input type="text" id="ngay-sx" placeholder="VD: 12/12/2031"></div>
     <div class="form-group"><label>Nước sản xuất:</label><input type="text" id="nuoc-sx"></div>
     <div class="form-group"><label>Tình trạng:</label><input type="text" id="tinh-trang"></div>
     <div class="form-group"><label>Phách (1-5):</label><input type="number" id="phach" min="1" max="5"></div>
@@ -55,14 +53,14 @@
 
     const isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
 
-    // Hàm xử lý cắt bỏ phần thừa T17:00...
+    // Hàm xử lý cắt bỏ phần thừa T17:00... và giữ nguyên chuỗi
     function formatStoredDate(dateStr) {
         if (!dateStr) return "";
-        // Nếu chuỗi chứa ký tự T (định dạng ISO), lấy phần trước chữ T
-        if (typeof dateStr === "string" && dateStr.includes('T')) {
-            return dateStr.split('T')[0];
+        let cleanDate = String(dateStr);
+        if (cleanDate.includes('T')) {
+            cleanDate = cleanDate.split('T')[0];
         }
-        return dateStr;
+        return cleanDate;
     }
 
     async function loadData() {
@@ -82,7 +80,6 @@
             const res = await fetch(`${SCRIPT_URL}?id=${encodeURIComponent(id)}`);
             const data = await res.json();
             if (data.ngay) {
-                // Sửa lỗi hiển thị T17:00:00 tại đây
                 document.getElementById('ngay-sx').value = formatStoredDate(data.ngay);
                 document.getElementById('nuoc-sx').value = data.nuoc;
                 document.getElementById('tinh-trang').value = data.tt;
@@ -102,20 +99,18 @@
     }
 
     async function saveData() {
-        const ngay = document.getElementById('ngay-sx').value;
+        const ngayVal = document.getElementById('ngay-sx').value;
         const nuoc = document.getElementById('nuoc-sx').value;
         const tt = document.getElementById('tinh-trang').value;
         const phach = document.getElementById('phach').value;
         const kt = document.getElementById('lan-kt').value;
         const han = document.getElementById('han-dung').value;
 
-        // Kiểm tra bắt buộc nhập tất cả
-        if (!ngay || !nuoc || !tt || !phach || !kt || !han) {
+        if (!ngayVal || !nuoc || !tt || !phach || !kt || !han) {
             alert("Vui lòng nhập đầy đủ tất cả các thông tin!");
             return;
         }
 
-        // Kiểm tra phách từ 1-5
         if (phach < 1 || phach > 5) {
             alert("Số Phách phải nằm trong khoảng từ 1 đến 5!");
             return;
@@ -126,7 +121,8 @@
 
         const payload = {
             id: id,
-            ngay: ngay,
+            // THÊM DẤU NHÁY ĐƠN ĐỂ ÉP GOOGLE SHEETS HIỂU LÀ VĂN BẢN (TRÁNH LỖI NHẢY NGÀY)
+            ngay: "'" + ngayVal, 
             nuoc: nuoc,
             tt: tt,
             phach: phach,
@@ -136,7 +132,7 @@
 
         try {
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            alert("Đã cập nhật dữ liệu vào Google Sheets thành công!");
+            alert("Đã cập nhật dữ liệu thành công!");
             makeQR();
         } catch (e) { alert("Lỗi kết nối!"); }
         finally { btn.innerText = "LƯU LÊN GOOGLE SHEETS"; btn.disabled = false; }
