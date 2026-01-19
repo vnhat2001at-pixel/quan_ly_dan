@@ -1,67 +1,159 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý thông tin đạn TLPK 5B27D</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Cầu Thủ - Player Showcase</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
+
 <body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="app-title">
+                    <i class="ph ph-soccer-ball" style="color: var(--accent); font-size: 2rem;"></i>
+                    <span>PlayerShowcase</span>
+                </div>
+            </div>
 
-    <header class="main-header">
-        <h1>Quản lý thông tin đạn TLPK 5B27Д</h1>
-    </header>
+            <input type="text" class="search-bar" placeholder="Tìm kiếm cầu thủ..." id="search-input">
 
-    <main class="container">
-        <section class="missile-section" id="tuyen-1">
-            <div class="label-box">
-                Đạn tên lửa tuyến 1 
-                <button class="btn-inline-add" onclick="addItem('tuyen-1')">+</button>
+            <div class="player-list" id="player-list">
+                <!-- Player items will be injected here -->
             </div>
-            <div class="content-box">
-                <div class="missile-container"></div>
-            </div>
-        </section>
 
-        <section class="missile-section" id="tuyen-2">
-            <div class="label-box">
-                Đạn tên lửa tuyến 2 
-                <button class="btn-inline-add" onclick="addItem('tuyen-2')">+</button>
-            </div>
-            <div class="content-box">
-                <div class="missile-container"></div>
-            </div>
-        </section>
-         <section class="missile-section" id="tuyen-3">
-            <div class="label-box">
-                Đạn tên lửa tuyến 3 
-                <button class="btn-inline-add" onclick="addItem('tuyen-3')">+</button>
-            </div>
-            <div class="content-box">
-                <div class="missile-container"></div>
-            </div>
-        </section>
-         <section class="missile-section" id="tuyen-4">
-            <div class="label-box">
-                Đạn tên lửa tuyến 4 
-                <button class="btn-inline-add" onclick="addItem('tuyen-4')">+</button>
-            </div>
-            <div class="content-box">
-                <div class="missile-container"></div>
-            </div>
-        </section>
-         <section class="missile-section" id="tuyen-5">
-            <div class="label-box">
-                Đạn tên lửa tuyến 5
-                <button class="btn-inline-add" onclick="addItem('tuyen-5')">+</button>
-            </div>
-            <div class="content-box">
-                <div class="missile-container"></div>
-            </div>
-        </section>
+            <button class="add-btn" id="add-btn">
+                <i class="ph ph-plus-circle" style="font-size: 1.2rem;"></i>
+                Thêm Cầu Thủ
+            </button>
+        </aside>
 
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Content will be injected here -->
         </main>
+    </div>
 
-    <script src="script.js"></script>
+    <!-- Templates -->
+    <template id="empty-state-template">
+        <div class="empty-state">
+            <i class="ph ph-user-focus empty-icon"></i>
+            <h2>Chọn một cầu thủ để xem thông tin</h2>
+            <p>Hoặc nhấn nút "Thêm Cầu Thủ" ở cột bên trái.</p>
+        </div>
+    </template>
+    
+
+    <template id="detail-view-template">
+        <div class="detail-container">
+            <!-- Left: Media -->
+            <div class="media-column">
+                <div class="card">
+                    <div class="profile-image-container">
+                        <img src="" alt="Player Image" class="profile-image" id="detail-image">
+                    </div>
+                    <label class="media-upload-label">
+                        <i class="ph ph-image"></i> Thay đổi ảnh
+                        <input type="file" accept="image/*" class="hidden-input" id="image-upload">
+                    </label>
+                </div>
+
+    
+            </div>
+
+            <!-- Right: Info -->
+            <div class="info-column">
+                <div class="header-actions">
+                    <button class="icon-btn delete" id="delete-btn" title="Xóa cầu thủ">
+                        <i class="ph ph-trash" style="font-size: 1.5rem;"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <input type="text" class="editable-name" id="detail-name" placeholder="Tên Cầu Thủ">
+                    <p class="player-item-subtitle" id="player-id-display">ID: ---</p>
+                </div>
+
+                <div class="card">
+                    <div class="section-title">
+                        <i class="ph ph-article"></i> Thông tin chi tiết
+                    </div>
+                    <textarea class="description-editor" id="detail-description"
+                        placeholder="Nhập thông tin về cầu thủ..."></textarea>
+                </div>
+
+                <div class="card">
+                    <div class="section-title">
+                        <i class="ph ph-headphones"></i> Giọng nói / Âm thanh
+                    </div>
+                    <div class="audio-player-container">
+                        <audio controls class="custom-audio" id="detail-audio"></audio>
+                    </div>
+                    <label class="media-upload-label" style="margin-top: 0.5rem;">
+                        <i class="ph ph-upload-simple"></i> Tải lên MP3
+                        <input type="file" accept="audio/*" class="hidden-input" id="audio-upload">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="app.js"></script>
 </body>
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm3WLw8bNu5bZ561hHLRKltcG25L4KAUrZYaT9go17gbAZWEX0RoWGf8E2aLHzyl-A/exec"; 
+
+    const params = new URLSearchParams(window.location.search);
+    
+
+    const isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
+
+    // Hàm xử lý cắt bỏ phần thừa T17:00... và giữ nguyên chuỗi
+    function formatStoredDate(dateStr) {
+        if (!dateStr) return "";
+        let cleanDate = String(dateStr);
+        if (cleanDate.includes('T')) {
+            cleanDate = cleanDate.split('T')[0];
+        }
+        return cleanDate;
+    }
+
+    async function loadData() {
+        if (isMobile) {
+            document.getElementById('role-badge').innerText = "CHẾ ĐỘ: XEM THÔNG TIN";
+            document.getElementById('role-badge').className = "badge badge-view";
+            document.getElementById('btn-save').style.display = 'none';
+            document.getElementById('qr-section').style.display = 'none';
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(i => i.readOnly = true);
+        } else {
+            document.getElementById('role-badge').innerText = "CHẾ ĐỘ: QUẢN TRỊ (SỬA)";
+            document.getElementById('role-badge').className = "badge badge-admin";
+        }
+
+        if (!isMobile) makeQR();
+    }
+
+    function makeQR() {
+        const qrDiv = document.getElementById("qrcode");
+        qrDiv.innerHTML = "";
+        new QRCode(qrDiv, { text: window.location.href, width: 180, height: 180 });
+    }
+
+
+
+    window.onload = loadData;
+</script>
 </html>
