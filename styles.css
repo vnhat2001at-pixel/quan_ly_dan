@@ -1,0 +1,432 @@
+:root {
+    --bg-primary: #0f172a; /* Slate 900 */
+    --bg-secondary: #1e293b; /* Slate 800 */
+    --bg-glass: rgba(30, 41, 59, 0.7);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent: #38bdf8; /* Sky 400 */
+    --accent-hover: #0ea5e9; /* Sky 500 */
+    --gold: #fbbf24;
+    --danger: #ef4444;
+    --border: #334155;
+    
+    --font-family: 'Inter', system-ui, sans-serif;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+    line-height: 1.5;
+}
+
+/* Layout */
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 320px;
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    margin-bottom: 2rem;
+}
+
+.app-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.player-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.player-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.player-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.player-item.active {
+    background-color: var(--accent);
+    color: white;
+}
+
+.player-item.active .player-item-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.player-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--bg-primary);
+    object-fit: cover;
+    border: 2px solid var(--border);
+}
+
+.player-info-mini {
+    display: flex;
+    flex-direction: column;
+}
+
+.player-name-mini {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.player-item-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.add-btn {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 20%);
+    padding: 2rem;
+    position: relative;
+}
+
+.empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Player Detail View */
+.detail-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Left Column: Media & QR */
+.media-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.profile-image-container {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background-color: var(--bg-primary);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-upload-label {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.media-upload-label:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.hidden-input {
+    display: none;
+}
+
+.qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+#qrcode {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 200px;
+    height: 200px;
+}
+
+/* Right Column: Info & Text */
+.info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+.icon-btn.delete:hover {
+    color: var(--danger);
+}
+
+.editable-name {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    width: 100%;
+    outline: none;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.editable-name:focus {
+    border-color: var(--accent);
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.description-editor {
+    width: 100%;
+    min-height: 200px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    outline: none;
+}
+
+.description-editor:focus {
+    border-color: var(--accent);
+}
+
+.audio-player-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.custom-audio {
+    width: 100%;
+}
+
+.video-section video {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    background: black;
+}
+#qrcode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    min-height: 160px; /* Đảm bảo có khoảng trống cho QR */
+    margin: 10px 0;
+}
+
+#qrcode canvas, #qrcode img {
+    max-width: 100%;
+    height: auto;
+}
+/* Sidebar Player Item */
+.player-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 8px;
+    margin-bottom: 4px;
+}
+
+.player-item.active {
+    background: var(--accent);
+    color: white;
+}
+
+.player-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #eee;
+}
+
+/* QR Code Section */
+#qrcode {
+    background: white !important; /* Bắt buộc nền trắng */
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    margin: 10px auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#qrcode canvas, #qrcode img {
+    max-width: 100%;
+}
+
+.hidden-input { display: none; }
